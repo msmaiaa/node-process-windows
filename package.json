@@ -36,6 +36,7 @@
   "homepage": "https://github.com/htblaleonie/node-process-windows#readme",
   "files": [
     "index.js",
-    "windows-console-app/windows-console-app/bin/Release/*"
+    "windows-console-app/windows-console-app/bin/Release/Newtonsoft.Json.dll",
+    "windows-console-app/windows-console-app/bin/Release/windows-console-app.exe"
   ]
 }
