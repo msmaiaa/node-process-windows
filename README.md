@@ -1,4 +1,4 @@
-# node-node-process-windows
+# node-window-switcher
 ###### Manage application windows via a Node API - set focus, cycle active windows, and get active windows
 
 - [Installation](#Installation)
@@ -10,10 +10,10 @@
 
 ## Installation
 
-Requires Node 4+
+Requires Node 12+
 
 ```
-    npm install node-process-windows
+    npm install node-window-switcher
 ```
 
 This module is __not supported__ in browsers.
@@ -29,44 +29,17 @@ Pull requests are welcome - it would be great to have this API work cross-platfo
 1) Get active processes
 
 ```javascript
-    var processWindows = require("node-process-windows");
+    var processWindows = require("node-window-switcher");
 
-    var activeProcesses = processWindows.getProcesses(function(err, processes) {
-        processes.forEach(function (p) {
-            console.log("PID: " + p.pid.toString());
-            console.log("MainWindowTitle: " + p.mainWindowTitle);
-            console.log("ProcessName: " + p.processName);
-        });
-    });
+    var activeProcesses = processWindows.getProcesses();
 ```
 
 2) Focus a window
 
 ```javascript
-    var processWindows = require("node-process-windows");
+    var processWindows = require("node-window-switcher");
 
-    // Focus window by process...
-    var activeProcesses = processWindows.getProcesses(function(err, processes) {
-        var chromeProcesses = processes.filter(p => p.processName.indexOf("chrome") >= 0);
-
-        // If there is a chrome process active, focus the first window
-        if(chromeProcesses.length > 0) {
-            processWindows.focusWindow(chromeProcesses[0]);
-        }
-    });
-
-    // Or focus by name
     processWindows.focusWindow("chrome");
-```
-
-3) Get active window
-
-```javascript
-    var processWindows = require("node-process-windows");
-
-    var currentActiveWindow = processWindows.getActiveWindow((err, processInfo) => {
-        console.log("Active window title: " + processInfo.mainWindowTitle);
-    });
 ```
 
 ## Contributing
