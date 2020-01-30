@@ -80,7 +80,7 @@ function focusWindow(process) {
  * Helper method to execute the C# process that wraps the native focus / window APIs
  */
 function executeProcess(arg, callback) {
-  callback = callback || noop;
+  callback = callback || (() => {});
 
   exec(windowsFocusManagementBinary + " " + arg, (error, stdout, stderr) => {
     if (error) {
