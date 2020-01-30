@@ -4,6 +4,7 @@
 
 - [Installation](#Installation)
   - [Supported Platforms](#Supported_Platforms)
+- [License](#License)
 - [Contact](#Contact)
 
 ## Installation
@@ -19,6 +20,10 @@ This module is __not supported__ in browsers.
 ### Supported Platforms
 
 Currently, this module is only supported on Windows, and uses a .NET console app to manage windows.
+
+## License
+
+[MIT License]("LICENSE")
 
 ## Contact
 
