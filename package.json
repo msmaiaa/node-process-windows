@@ -1,7 +1,7 @@
 {
   "name": "node-window-switcher",
-  "version": "0.0.3",
-  "description": "View information about running processes, get the active process window, or activate a process's main window.",
+  "version": "0.0.7",
+  "description": "View information about running processes or activate a process's main window.",
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/extr0py/node-process-windows.git"
+    "url": "https://github.com/htblaleonie/node-process-windows"
   },
   "keywords": [
     "window",
@@ -28,10 +28,10 @@
     "net",
     "c#"
   ],
-  "author": "extr0py",
+  "author": "dorfingerjonas & stefnotch",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/extr0py/node-process-windows/issues"
+    "url": "https://github.com/htblaleonie/node-process-windows/issues"
   },
-  "homepage": "https://github.com/extr0py/node-process-windows#readme"
+  "homepage": "https://github.com/htblaleonie/node-process-windows#readme"
 }
