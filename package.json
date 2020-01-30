@@ -1,6 +1,6 @@
 {
-  "name": "node-process-windows",
-  "version": "0.0.2",
+  "name": "node-window-switcher",
+  "version": "0.0.3",
   "description": "View information about running processes, get the active process window, or activate a process's main window.",
   "main": "index.js",
   "dependencies": {},
