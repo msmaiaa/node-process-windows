@@ -4,8 +4,12 @@
   "description": "View information about running processes, get the active process window, or activate a process's main window.",
   "main": "index.js",
   "dependencies": {},
-  "devDependencies": {},
+  "devDependencies": {
+    "gulp": "^4.0.2",
+    "gulp-msbuild": "^0.6.2"
+  },
   "scripts": {
+    "build": "gulp",
     "test": "npm run test"
   },
   "repository": {
