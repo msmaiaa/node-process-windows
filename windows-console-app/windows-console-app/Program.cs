@@ -5,19 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace windows_console_app
 {
-    public class Output
-    {
-        public string Error { get; set; }
-
-        public object Result { get; set; }
-    }
-
     public class ProcessInfo
     {
-        public int ProcessId { get; set; }
+        public uint ProcessId { get; set; }
 
         public string MainWindowTitle { get; set; }
 
@@ -28,70 +22,136 @@ namespace windows_console_app
     {
         static void Main(string[] args)
         {
-
             if (args.Length < 1)
-                throw new ArgumentException("Please specify an argument: --processInfo, --focus <pid>, --activewindow");
+                throw new ArgumentException("Please specify some arguments: --active, --list, --focus and then --name <name>, --pid <pid>, --class <classname>");
 
-            var argument = args[0].ToLowerInvariant();
-
-            var output = new Output();
-
+            List<ProcessInfo> processes = new List<ProcessInfo>();
+            bool focus = false;
             try
             {
-                switch (argument)
+                switch (args[0].ToLower())
                 {
-                    case "--activewindow":
-                        output.Result = GetActiveProcessInfo();
-                        break;
-                    case "--processinfo":
-                        output.Result = GetProcessInfo();
-                        break;
-                    case "--focus":
-                        if (argument.Length < 2)
-                            throw new ArgumentException("--focus requires a processId");
+                case "--active":
+                    processes.Add(GetActiveProcess());
+                    break;
+                case "--list":
+                    processes.AddRange(GetAllProcesses());
+                    break;
+                case "--focus":
+                    focus = true;
+                    break;
 
-                        FocusHandler.SwitchToWindow(Int32.Parse(args[1]));
-                        output.Result = true;
-                        break;
-                    default:
-                        throw new ArgumentException("Unknonw argument: " + argument);
+                default:
+                    throw new ArgumentException("Unknown argument");
+                }
+
+                if (focus)
+                {
+                    uint? pid = null;
+                    string partialTitle = "";
+                    string partialClass = "";
+
+                    for (int i = 0; i < args.Length; i++)
+                    {
+                        if (args[i] == "--pid")
+                        {
+                            pid = uint.Parse(args[i + 1]);
+                        }
+                        else if (args[i] == "--name")
+                        {
+                            partialTitle = args[i + 1];
+                        }
+                        else if (args[i] == "--class")
+                        {
+                            partialClass = args[i + 1];
+                        }
+                    }
+                    processes.AddRange(Focus(pid, partialTitle, partialClass));
                 }
 
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                output.Error = ex.ToString();
+                Console.Error.WriteLine(ex.ToString());
+                return;
             }
 
-            Console.WriteLine(JsonConvert.SerializeObject(output));
+            Console.WriteLine(JsonConvert.SerializeObject(processes));
         }
 
-        private static ProcessInfo[] GetProcessInfo()
+        private static List<ProcessInfo> Focus(uint? pid, string partialTitle, string partialClass)
         {
-            var processes = Process.GetProcesses();
-            return ConvertToProcessInfo(processes);
+            List<ProcessInfo> processes = new List<ProcessInfo>();
+            NativeMethods.EnumDesktopWindows(IntPtr.Zero, (IntPtr hWnd, int lParam) =>
+            {
+                var processInfo = GetProcessInfo(hWnd);
+
+                if (pid.HasValue && lParam != pid)
+                    return true;
+                if (!string.IsNullOrEmpty(partialTitle) && processInfo.MainWindowTitle.IndexOf(partialTitle, StringComparison.OrdinalIgnoreCase) != 0)
+                    return true;
+                if (!string.IsNullOrEmpty(partialClass) && processInfo.ProcessName.IndexOf(partialClass, StringComparison.OrdinalIgnoreCase) != 0)
+                    return true;
+
+                if (NativeMethods.IsWindowVisible(hWnd))
+                {
+                    processes.Add(processInfo);
+                    NativeMethods.SwitchToThisWindow(hWnd, true);
+                }
+                return true;
+            }, IntPtr.Zero);
+            return processes;
         }
 
-        private static ProcessInfo GetActiveProcessInfo()
+
+        private static ProcessInfo GetActiveProcess()
         {
-            var processes = Process.GetProcesses();
             var activeForegroundWindow = NativeMethods.GetForegroundWindow();
-
-            var activeWindows = processes.Where(p => p.MainWindowHandle == activeForegroundWindow);
-
-            if (activeWindows.Count() < 1)
-            {
-                return null;
-            }
-            else
-                return ConvertToProcessInfo(activeWindows)[0];
+            return GetProcessInfo(activeForegroundWindow);
         }
 
-        private static ProcessInfo[] ConvertToProcessInfo(IEnumerable<Process> processes)
+        private static List<ProcessInfo> GetAllProcesses()
         {
-            return processes
-                    .Select(process => new ProcessInfo() { MainWindowTitle = process.MainWindowTitle, ProcessId = process.Id, ProcessName = process.ProcessName })
-                    .ToArray();
+            // TODO: Multiple desktops https://stackoverflow.com/questions/17321363/how-can-i-get-a-list-of-processes-running-across-multiple-virtual-desktops
+
+            List<ProcessInfo> processes = new List<ProcessInfo>();
+
+            NativeMethods.EnumDesktopWindows(IntPtr.Zero, (IntPtr hWnd, int lParam) =>
+            {
+                string title = GetTitle(hWnd);
+                if (NativeMethods.IsWindowVisible(hWnd) && !string.IsNullOrEmpty(title))
+                {
+                    processes.Add(GetProcessInfo(hWnd));
+                }
+                return true;
+            }, IntPtr.Zero);
+
+            return processes;
+        }
+
+        private static ProcessInfo GetProcessInfo(IntPtr hWnd)
+        {
+            NativeMethods.GetWindowThreadProcessId(hWnd, out uint processId);
+            return new ProcessInfo()
+            {
+                ProcessId = processId,
+                MainWindowTitle = GetTitle(hWnd),
+                ProcessName = GetName(hWnd)
+            };
+        }
+
+        private static string GetTitle(IntPtr hWnd)
+        {
+            StringBuilder sb = new StringBuilder(1024);
+            int length = NativeMethods.GetWindowText(hWnd, sb, sb.Capacity);
+            return sb.ToString();
+        }
+
+        private static string GetName(IntPtr hWnd)
+        {
+            StringBuilder sb = new StringBuilder(1024);
+            int length = NativeMethods.GetClassName(hWnd, sb, sb.Capacity);
+            return sb.ToString();
         }
     }
 }
