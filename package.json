@@ -1,6 +1,6 @@
 {
   "name": "node-window-switcher",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "View information about running processes or activate a process's main window.",
   "main": "index.js",
   "dependencies": {},
@@ -33,5 +33,9 @@
   "bugs": {
     "url": "https://github.com/htblaleonie/node-process-windows/issues"
   },
-  "homepage": "https://github.com/htblaleonie/node-process-windows#readme"
+  "homepage": "https://github.com/htblaleonie/node-process-windows#readme",
+  "files": [
+    "index.js",
+    "windows-console-app/windows-console-app/bin/Release/*"
+  ]
 }
