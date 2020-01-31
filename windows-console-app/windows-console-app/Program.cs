@@ -127,7 +127,10 @@ namespace windows_console_app
                     NativeMethods.SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
                     NativeMethods.SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
                     NativeMethods.SetForegroundWindow(hWnd);
-                    NativeMethods.ShowWindow(hWnd, 9); // https://stackoverflow.com/a/31604052/3492994
+
+                    const int SW_MAXIMIZE = 3;
+                    const int SW_RESTORE = 9;
+                    NativeMethods.ShowWindow(hWnd, SW_MAXIMIZE | SW_RESTORE); // https://stackoverflow.com/a/31604052/3492994
 
                     NativeMethods.AttachThreadInput(thisThread, currentForegroundThread, false);
                     NativeMethods.SetFocus(hWnd);
