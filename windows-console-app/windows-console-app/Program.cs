@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Security.Permissions;
 using System.Text;
 using Newtonsoft.Json;
 
@@ -43,6 +44,9 @@ namespace windows_console_app
 
                 if (focus)
                 {
+                    new UIPermission(UIPermissionWindow.AllWindows).Demand();
+                    new UIPermission(UIPermissionWindow.AllWindows).Assert();
+
                     uint? pid = null;
                     string partialTitle = "";
                     string partialClass = "";
@@ -92,7 +96,45 @@ namespace windows_console_app
                 if (NativeMethods.IsWindowVisible(hWnd))
                 {
                     processes.Add(processInfo);
-                    NativeMethods.SwitchToThisWindow(hWnd, true);
+
+                    //https://stackoverflow.com/a/34414846/3492994
+                    IntPtr currentForegroundWindow = NativeMethods.GetForegroundWindow();
+                    uint currentForegroundThread = NativeMethods.GetWindowThreadProcessId(hWnd, out uint _);
+                    uint thisThread = NativeMethods.GetCurrentThreadId();
+
+                    NativeMethods.AttachThreadInput(thisThread, currentForegroundThread, true);
+                    const int SWP_ASYNCWINDOWPOS = 0x4000;
+                    const int SWP_DEFERERASE = 0x2000;
+                    const int SWP_DRAWFRAME = 0x0020;
+                    const int SWP_FRAMECHANGED = 0x0020;
+                    const int SWP_HIDEWINDOW = 0x0080;
+                    const int SWP_NOACTIVATE = 0x0010;
+                    const int SWP_NOCOPYBITS = 0x0100;
+                    const int SWP_NOMOVE = 0x0002;
+                    const int SWP_NOOWNERZORDER = 0x0200;
+                    const int SWP_NOREDRAW = 0x0008;
+                    const int SWP_NOREPOSITION = 0x0200;
+                    const int SWP_NOSENDCHANGING = 0x0400;
+                    const int SWP_NOSIZE = 0x0001;
+                    const int SWP_NOZORDER = 0x0004;
+                    const int SWP_SHOWWINDOW = 0x0040;
+
+                    const int HWND_TOP = 0;
+                    const int HWND_BOTTOM = 1;
+                    const int HWND_TOPMOST = -1;
+                    const int HWND_NOTOPMOST = -2;
+
+                    NativeMethods.SetWindowPos(hWnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+                    NativeMethods.SetWindowPos(hWnd, HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOSIZE | SWP_NOMOVE);
+                    NativeMethods.SetForegroundWindow(hWnd);
+                    NativeMethods.ShowWindow(hWnd, 9); // https://stackoverflow.com/a/31604052/3492994
+
+                    NativeMethods.AttachThreadInput(thisThread, currentForegroundThread, false);
+                    NativeMethods.SetFocus(hWnd);
+                    NativeMethods.SetActiveWindow(hWnd);
+
+                    NativeMethods.BringWindowToTop(hWnd);
+                    NativeMethods.SwitchToThisWindow(hWnd, false);
                 }
                 return true;
             }, IntPtr.Zero);
