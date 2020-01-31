@@ -130,7 +130,8 @@ namespace windows_console_app
 
                     const int SW_MAXIMIZE = 3;
                     const int SW_RESTORE = 9;
-                    NativeMethods.ShowWindow(hWnd, SW_MAXIMIZE | SW_RESTORE); // https://stackoverflow.com/a/31604052/3492994
+                    NativeMethods.ShowWindow(hWnd, SW_RESTORE); 
+                    NativeMethods.ShowWindow(hWnd, SW_MAXIMIZE);
 
                     NativeMethods.AttachThreadInput(thisThread, currentForegroundThread, false);
                     NativeMethods.SetFocus(hWnd);
