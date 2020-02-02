@@ -71,8 +71,7 @@ async function focusWindow(process) {
  * Helper method to execute the C# process that wraps the native focus / window APIs
  */
 async function executeProcess(arg) {
-  console.log(arg);
-  const { error, stdout, stderr } = await exec(windowsFocusManagementBinary + " " + arg);
+  const { error, stdout, stderr } = await exec(`"${windowsFocusManagementBinary}" ${arg}`);
   if (error) {
     throw new Error(error);
   }
