@@ -1,5 +1,0 @@
-{
-  "url": "https://jenkins.vm81.htl-leonding.ac.at/job/Leonie/lastSuccessfulBuild/artifact/*zip*/archive.zip",
-  "zipPath": "./archive.zip",
-  "extractPath": "./extractedArchive"
-}
