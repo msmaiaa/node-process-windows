@@ -43,3 +43,6 @@ bin/
 obj/
 
 .vs/
+
+# downloaded files
+*.zip
