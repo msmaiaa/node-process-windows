@@ -26,7 +26,7 @@ async function getProcesses() {
     throw new Error("Non-Windows platforms are currently not supported");
   }
 
-  return await executeProcess("--list", callback);
+  return await executeProcess("--list");
 }
 
 
@@ -43,7 +43,6 @@ async function focusWindow(process) {
   }
 
   if (process === null) return;
-
   if (typeof process === "number") {
     return await executeProcess(`--focus --pid ${process.toString()}`);
   } else if (typeof process === "string") {
