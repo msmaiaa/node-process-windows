@@ -1,7 +1,7 @@
 {
-  "name": "node-window-switcher",
+  "name": "node-window-switcher-fix",
   "version": "0.0.13",
-  "description": "View information about running processes or activate a process's main window.",
+  "description": "View information about running processes or activate a process's main window. This is just a fork that works, original owners are dorfingerjonas & stefnotch",
   "main": "index.js",
   "devDependencies": {
     "gulp": "^4.0.2",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/htblaleonie/node-process-windows"
+    "url": "https://github.com/msmaiaa/node-process-windows"
   },
   "keywords": [
     "window",
@@ -30,9 +30,9 @@
   "author": "dorfingerjonas & stefnotch",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/htblaleonie/node-process-windows/issues"
+    "url": "https://github.com/msmaiaa/node-process-windows/issues"
   },
-  "homepage": "https://github.com/htblaleonie/node-process-windows#readme",
+  "homepage": "https://github.com/msmaiaa/node-process-windows#readme",
   "files": [
     "index.js",
     "windows-console-app/windows-console-app/bin/Release/Newtonsoft.Json.dll",
