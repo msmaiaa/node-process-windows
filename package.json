@@ -1,6 +1,6 @@
 {
   "name": "node-window-switcher-fix",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "View information about running processes or activate a process's main window. This is just a fork that works, original owners are dorfingerjonas & stefnotch",
   "main": "index.js",
   "devDependencies": {
